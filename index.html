@@ -1,168 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>IoT-FYP Dashboard</title>
+    <title>IoT-FYP Dashboard</title>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-body{
-    font-family:Arial,sans-serif;
-    background:#0b1220;
-    color:#e8eef7;
-    min-height:100vh;
-}
+        body {
+            font-family: Arial, sans-serif;
+            background: #08111f;
+            color: white;
+            min-height: 100vh;
+        }
 
-.container{
-    max-width:1200px;
-    margin:auto;
-    padding:28px;
-}
+        .container {
+            width: 82%;
+            max-width: 1450px;
+            margin: auto;
+            padding: 35px 0;
+        }
 
-.header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:28px;
-}
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+        }
 
-.title{
-    font-size:28px;
-    font-weight:700;
-}
+        .title h1 {
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
 
-.subtitle{
-    color:#91a0b7;
-    margin-top:6px;
-}
+        .title p {
+            font-size: 21px;
+            color: #9bb5d3;
+        }
 
-.live{
-    padding:8px 13px;
-    border-radius:20px;
-    background:#123522;
-    color:#58e08a;
-    font-size:13px;
-    font-weight:600;
-}
+        .live {
+            background: #0d3b27;
+            color: #42f58d;
+            padding: 11px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+        }
 
-.cards{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:18px;
-    margin-bottom:20px;
-}
+        /* CARDS */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+            margin-bottom: 25px;
+        }
 
-.card,
-.chart-card{
-    background:#121c2d;
-    border:1px solid #243249;
-    border-radius:16px;
-    padding:22px;
-}
+        .card {
+            background: #111d2e;
+            border: 1px solid #263953;
+            border-radius: 18px;
+            padding: 28px;
+            min-height: 165px;
+        }
 
-.label{
-    color:#91a0b7;
-    font-size:13px;
-    margin-bottom:12px;
-}
+        .card-title {
+            color: #9bb5d3;
+            font-size: 17px;
+            margin-bottom: 15px;
+        }
 
-.value{
-    font-size:32px;
-    font-weight:700;
-}
+        .value {
+            font-size: 39px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
 
-.unit{
-    font-size:15px;
-    color:#91a0b7;
-    margin-left:5px;
-}
+        .unit {
+            font-size: 18px;
+            color: #8ca8c8;
+            font-weight: normal;
+        }
 
-.status{
-    margin-top:10px;
-    font-size:13px;
-    font-weight:600;
-}
+        .status {
+            font-weight: bold;
+            font-size: 16px;
+        }
 
-.normal{
-    color:#58e08a;
-}
+        .normal {
+            color: white;
+        }
 
-.warning{
-    color:#ffcc66;
-}
+        .connected {
+            color: #42f58d;
+        }
 
-.grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:18px;
-}
+        .last-reading {
+            font-size: 20px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
 
-.chart-title{
-    font-size:16px;
-    font-weight:600;
-    margin-bottom:18px;
-}
+        .timezone {
+            margin-top: 12px;
+            font-size: 15px;
+            font-weight: bold;
+        }
 
-.chart-wrap{
-    height:280px;
-}
+        /* CHARTS */
+        .charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
 
-.footer{
-    margin-top:20px;
-    color:#687991;
-    font-size:12px;
-    text-align:center;
-}
+        .chart-card {
+            background: #111d2e;
+            border: 1px solid #263953;
+            border-radius: 18px;
+            padding: 26px;
+            height: 450px;
+        }
 
-@media(max-width:850px){
-    .cards{
-        grid-template-columns:repeat(2,1fr);
-    }
+        .chart-card h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
 
-    .grid{
-        grid-template-columns:1fr;
-    }
-}
+        .chart-container {
+            position: relative;
+            height: 370px;
+        }
 
-@media(max-width:520px){
-    .container{
-        padding:18px;
-    }
+        /* MOBILE */
+        @media (max-width: 900px) {
 
-    .cards{
-        grid-template-columns:1fr;
-    }
+            .container {
+                width: 92%;
+            }
 
-    .value{
-        font-size:28px;
-    }
-}
-</style>
+            .cards {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .charts {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .title h1 {
+                font-size: 28px;
+            }
+
+            .title p {
+                font-size: 17px;
+            }
+
+            .last-reading {
+                white-space: normal;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="container">
 
+    <!-- HEADER -->
     <div class="header">
 
-        <div>
-            <div class="title">
-                IoT-FYP Dashboard
-            </div>
-
-            <div class="subtitle">
-                In-Pipe Energy Monitoring System
-            </div>
+        <div class="title">
+            <h1>IoT-FYP Dashboard</h1>
+            <p>In-Pipe Energy Monitoring System</p>
         </div>
 
         <div class="live">
@@ -172,74 +201,76 @@ body{
     </div>
 
 
+    <!-- CARDS -->
     <div class="cards">
 
+        <!-- VOLTAGE -->
         <div class="card">
 
-            <div class="label">
+            <div class="card-title">
                 VOLTAGE
             </div>
 
-            <div>
-                <span id="voltage" class="value">--</span>
+            <div class="value">
+                <span id="voltageValue">--</span>
                 <span class="unit">V</span>
             </div>
 
-            <div id="voltageStatus" class="status">
-                Waiting...
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="label">
-                RAIN
-            </div>
-
-            <div>
-                <span id="rain" class="value">--</span>
-            </div>
-
-            <div id="rainStatus" class="status">
-                Waiting...
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="label">
-                LAST READING
-            </div>
-
-            <div id="lastReading"
-                 class="value"
-                 style="font-size:19px">
+            <div id="voltageStatus" class="status normal">
                 --
             </div>
 
-            <div class="status">
+        </div>
+
+
+        <!-- RAIN -->
+        <div class="card">
+
+            <div class="card-title">
+                RAIN
+            </div>
+
+            <div class="value">
+                <span id="rainValue">--</span>
+            </div>
+
+            <div id="rainStatus" class="status normal">
+                --
+            </div>
+
+        </div>
+
+
+        <!-- LAST READING -->
+        <div class="card">
+
+            <div class="card-title">
+                LAST READING
+            </div>
+
+            <div id="lastReading" class="last-reading">
+                --
+            </div>
+
+            <div class="timezone">
                 Malaysia Time (GMT+8)
             </div>
 
         </div>
 
 
+        <!-- RECORDS -->
         <div class="card">
 
-            <div class="label">
+            <div class="card-title">
                 RECORDS
             </div>
 
-            <div id="records"
-                 class="value">
-                --
+            <div class="value">
+                <span id="recordCount">--</span>
             </div>
 
-            <div class="status normal">
+            <div id="databaseStatus" class="status connected">
                 Database connected
             </div>
 
@@ -248,28 +279,31 @@ body{
     </div>
 
 
-    <div class="grid">
+    <!-- CHARTS -->
+    <div class="charts">
 
+        <!-- VOLTAGE CHART -->
         <div class="chart-card">
 
-            <div class="chart-title">
+            <h2>
                 Voltage History
-            </div>
+            </h2>
 
-            <div class="chart-wrap">
+            <div class="chart-container">
                 <canvas id="voltageChart"></canvas>
             </div>
 
         </div>
 
 
+        <!-- RAIN CHART -->
         <div class="chart-card">
 
-            <div class="chart-title">
+            <h2>
                 Rain History
-            </div>
+            </h2>
 
-            <div class="chart-wrap">
+            <div class="chart-container">
                 <canvas id="rainChart"></canvas>
             </div>
 
@@ -277,283 +311,137 @@ body{
 
     </div>
 
-
-    <div class="footer">
-        IoT-FYP • Supabase Data API • Malaysia Time (GMT+8) • Auto refresh every 5 seconds
-    </div>
-
 </div>
 
 
 <script>
 
-/* =========================================
-   SUPABASE
-========================================= */
+    /* =====================================================
+       SUPABASE
+       ===================================================== */
 
-const SUPABASE_URL =
-"https://yemublzamyvyheheqoij.supabase.co";
-
-const SUPABASE_KEY =
-"sb_publishable_V72oPOCmQdC2DPke7OwPng_3DaQUy9y";
-
-const ENDPOINT =
-`${SUPABASE_URL}/rest/v1/sensor_data`;
-
-
-/* =========================================
-   MALAYSIA TIMEZONE
-========================================= */
-
-const MALAYSIA_TIMEZONE =
-"Asia/Kuala_Lumpur";
-
-
-/* =========================================
-   CHART VARIABLES
-========================================= */
-
-let voltageChart;
-let rainChart;
-
-
-/* =========================================
-   CHART OPTIONS
-========================================= */
-
-const options = {
-
-    responsive:true,
-
-    maintainAspectRatio:false,
-
-    plugins:{
-        legend:{
-            display:false
-        }
-    },
-
-    scales:{
-
-        x:{
-            ticks:{
-                color:"#91a0b7"
-            },
-
-            grid:{
-                color:"#243249"
-            }
-        },
-
-        y:{
-            ticks:{
-                color:"#91a0b7"
-            },
-
-            grid:{
-                color:"#243249"
-            }
-        }
-
-    }
-
-};
-
-
-/* =========================================
-   CONVERT SUPABASE TIME TO MALAYSIA TIME
-========================================= */
-
-function convertToMalaysiaTime(dateString){
-
-    let value = String(dateString);
+    const SUPABASE_URL =
+        "https://yemublzamyvyheheqoij.supabase.co";
 
     /*
-       Supabase timestamp may arrive without
-       timezone information.
-
-       We force it to UTC first.
+       MASUKKAN PUBLISHABLE KEY AWAK DI SINI.
+       Guna key yang sama seperti code lama.
     */
+    const SUPABASE_KEY =
+        "PASTE_YOUR_EXISTING_PUBLISHABLE_KEY_HERE";
 
-    if(
-        !value.endsWith("Z") &&
-        !value.includes("+") &&
-        !/[+-]\d{2}:\d{2}$/.test(value)
-    ){
+    const ENDPOINT =
+        `${SUPABASE_URL}/rest/v1/sensor_data`;
 
-        value =
-            value.replace(" ","T") + "Z";
 
+    /* =====================================================
+       MALAYSIA TIME
+       ===================================================== */
+
+    function convertToMalaysiaTime(dateString) {
+
+        let value = String(dateString).trim();
+
+        /*
+           Kalau timestamp daripada database
+           tidak mempunyai timezone, kita anggap UTC.
+        */
+
+        if (
+            !value.endsWith("Z") &&
+            !value.includes("+") &&
+            !/[+-]\d{2}:\d{2}$/.test(value)
+        ) {
+
+            value = value.replace(" ", "T") + "Z";
+
+        }
+
+        const utcDate = new Date(value);
+
+        /*
+           Malaysia = UTC + 8 jam
+        */
+
+        return new Date(
+            utcDate.getTime() +
+            (8 * 60 * 60 * 1000)
+        );
     }
 
 
-    return new Date(value);
+    function formatMalaysiaDateTime(dateString) {
 
-}
+        const date =
+            convertToMalaysiaTime(dateString);
 
+        return date.toLocaleString("en-MY", {
 
-/* =========================================
-   FORMAT DATE + TIME
-========================================= */
+            timeZone: "UTC",
 
-function formatMalaysiaDateTime(dateString){
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
 
-    const date =
-        convertToMalaysiaTime(dateString);
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
 
+            hour12: true
 
-    return date.toLocaleString(
-        "en-MY",
-        {
+        });
+    }
 
-            timeZone:MALAYSIA_TIMEZONE,
 
-            year:"numeric",
+    function formatMalaysiaTime(dateString) {
 
-            month:"2-digit",
+        const date =
+            convertToMalaysiaTime(dateString);
 
-            day:"2-digit",
+        return date.toLocaleTimeString("en-MY", {
 
-            hour:"2-digit",
+            timeZone: "UTC",
 
-            minute:"2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
 
-            second:"2-digit",
+            hour12: true
 
-            hour12:true
+        });
+    }
 
-        }
-    );
 
-}
+    /* =====================================================
+       CHART VARIABLES
+       ===================================================== */
 
+    let voltageChart;
+    let rainChart;
 
-/* =========================================
-   FORMAT GRAPH TIME
-========================================= */
 
-function formatMalaysiaTime(dateString){
+    /* =====================================================
+       LOAD DATA FROM SUPABASE
+       ===================================================== */
 
-    const date =
-        convertToMalaysiaTime(dateString);
+    async function loadData() {
 
+        try {
 
-    return date.toLocaleTimeString(
-        "en-MY",
-        {
-
-            timeZone:MALAYSIA_TIMEZONE,
-
-            hour:"2-digit",
-
-            minute:"2-digit",
-
-            second:"2-digit",
-
-            hour12:true
-
-        }
-    );
-
-}
-
-
-/* =========================================
-   CREATE VOLTAGE + RAIN CHART
-========================================= */
-
-function makeCharts(){
-
-    voltageChart =
-        new Chart(
-            document.getElementById("voltageChart"),
-            {
-
-                type:"line",
-
-                data:{
-
-                    labels:[],
-
-                    datasets:[
-
-                        {
-
-                            data:[],
-
-                            tension:0.35,
-
-                            fill:false
-
-                        }
-
-                    ]
-
-                },
-
-                options:options
-
-            }
-        );
-
-
-    rainChart =
-        new Chart(
-            document.getElementById("rainChart"),
-            {
-
-                type:"line",
-
-                data:{
-
-                    labels:[],
-
-                    datasets:[
-
-                        {
-
-                            data:[],
-
-                            tension:0.35,
-
-                            fill:false
-
-                        }
-
-                    ]
-
-                },
-
-                options:options
-
-            }
-        );
-
-}
-
-
-/* =========================================
-   LOAD DATA FROM SUPABASE
-========================================= */
-
-async function loadData(){
-
-    try{
-
-        const response =
-            await fetch(
+            const response = await fetch(
 
                 `${ENDPOINT}?select=id,voltage,rain,voltage_status,rain_status,reading_time&order=reading_time.desc&limit=20`,
 
                 {
 
-                    headers:{
+                    method: "GET",
 
-                        "apikey":
-                        SUPABASE_KEY,
+                    headers: {
+
+                        "apikey": SUPABASE_KEY,
 
                         "Authorization":
-                        `Bearer ${SUPABASE_KEY}`
+                            `Bearer ${SUPABASE_KEY}`
 
                     }
 
@@ -562,197 +450,400 @@ async function loadData(){
             );
 
 
-        if(!response.ok){
+            if (!response.ok) {
 
-            throw new Error(
-                "HTTP " + response.status
-            );
+                throw new Error(
+                    `HTTP Error: ${response.status}`
+                );
 
-        }
-
-
-        const rows =
-            await response.json();
+            }
 
 
-        if(!rows.length){
-
-            return;
-
-        }
+            const data =
+                await response.json();
 
 
-        /* =================================
-           LATEST DATA
-        ================================= */
+            if (!Array.isArray(data) ||
+                data.length === 0) {
 
-        const latest =
-            rows[0];
+                console.log("No data found.");
 
+                return;
 
-        /* Voltage */
-
-        document.getElementById(
-            "voltage"
-        ).textContent =
-            latest.voltage ?? "--";
+            }
 
 
-        /* Rain */
+            /* =================================================
+               LATEST DATA
+               ================================================= */
 
-        document.getElementById(
-            "rain"
-        ).textContent =
-            latest.rain ?? "--";
-
-
-        /* Voltage Status */
-
-        document.getElementById(
-            "voltageStatus"
-        ).textContent =
-            latest.voltage_status ?? "--";
+            const latest = data[0];
 
 
-        /* Rain Status */
-
-        document.getElementById(
-            "rainStatus"
-        ).textContent =
-            latest.rain_status ?? "--";
+            document.getElementById(
+                "voltageValue"
+            ).textContent =
+                Number(latest.voltage).toFixed(1);
 
 
-        /* =================================
-           LAST READING
-           MALAYSIA UTC+8
-        ================================= */
-
-        document.getElementById(
-            "lastReading"
-        ).textContent =
-            formatMalaysiaDateTime(
-                latest.reading_time
-            );
+            document.getElementById(
+                "rainValue"
+            ).textContent =
+                latest.rain;
 
 
-        /* =================================
-           RECORDS
-        ================================= */
-
-        document.getElementById(
-            "records"
-        ).textContent =
-            rows.length +
-            (rows.length === 20 ? "+" : "");
+            document.getElementById(
+                "voltageStatus"
+            ).textContent =
+                latest.voltage_status;
 
 
-        /* =================================
-           CHART DATA
-        ================================= */
-
-        const chartData =
-            [...rows].reverse();
+            document.getElementById(
+                "rainStatus"
+            ).textContent =
+                latest.rain_status;
 
 
-        /* =================================
-           MALAYSIA TIME LABELS
-        ================================= */
+            document.getElementById(
+                "lastReading"
+            ).textContent =
+                formatMalaysiaDateTime(
+                    latest.reading_time
+                );
 
-        const labels =
-            chartData.map(
 
-                row =>
+            document.getElementById(
+                "recordCount"
+            ).textContent =
+                data.length;
+
+
+            document.getElementById(
+                "databaseStatus"
+            ).textContent =
+                "Database connected";
+
+
+            /* =================================================
+               CHART DATA
+               ================================================= */
+
+            /*
+               Supabase returns newest first.
+               Reverse it so chart goes oldest → newest.
+            */
+
+            const chartData =
+                [...data].reverse();
+
+
+            const labels =
+                chartData.map(row =>
                     formatMalaysiaTime(
                         row.reading_time
                     )
-
-            );
-
-
-        /* =================================
-           VOLTAGE CHART
-        ================================= */
-
-        voltageChart.data.labels =
-            labels;
+                );
 
 
-        voltageChart.data.datasets[0].data =
-            chartData.map(
-
-                row =>
+            const voltageValues =
+                chartData.map(row =>
                     Number(row.voltage)
-
-            );
-
-
-        voltageChart.update();
+                );
 
 
-        /* =================================
-           RAIN CHART
-        ================================= */
-
-        rainChart.data.labels =
-            labels;
-
-
-        rainChart.data.datasets[0].data =
-            chartData.map(
-
-                row =>
+            const rainValues =
+                chartData.map(row =>
                     Number(row.rain)
+                );
 
+
+            /* =================================================
+               UPDATE VOLTAGE CHART
+               ================================================= */
+
+            if (voltageChart) {
+
+                voltageChart.destroy();
+
+            }
+
+
+            const voltageCtx =
+                document
+                    .getElementById("voltageChart")
+                    .getContext("2d");
+
+
+            voltageChart =
+                new Chart(
+                    voltageCtx,
+                    {
+
+                        type: "line",
+
+                        data: {
+
+                            labels: labels,
+
+                            datasets: [
+
+                                {
+
+                                    label: "Voltage (V)",
+
+                                    data:
+                                        voltageValues,
+
+                                    borderColor:
+                                        "#3498db",
+
+                                    backgroundColor:
+                                        "rgba(52, 152, 219, 0.15)",
+
+                                    borderWidth: 3,
+
+                                    pointRadius: 4,
+
+                                    pointHoverRadius: 6,
+
+                                    tension: 0.3,
+
+                                    fill: false
+
+                                }
+
+                            ]
+
+                        },
+
+
+                        options: {
+
+                            responsive: true,
+
+                            maintainAspectRatio: false,
+
+                            plugins: {
+
+                                legend: {
+
+                                    display: false
+
+                                }
+
+                            },
+
+
+                            scales: {
+
+                                x: {
+
+                                    ticks: {
+
+                                        color: "#8fa3bd",
+
+                                        maxRotation: 45,
+
+                                        minRotation: 45
+
+                                    },
+
+                                    grid: {
+
+                                        color:
+                                            "#263953"
+
+                                    }
+
+                                },
+
+
+                                y: {
+
+                                    ticks: {
+
+                                        color: "#8fa3bd"
+
+                                    },
+
+                                    grid: {
+
+                                        color:
+                                            "#263953"
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+                );
+
+
+            /* =================================================
+               UPDATE RAIN CHART
+               ================================================= */
+
+            if (rainChart) {
+
+                rainChart.destroy();
+
+            }
+
+
+            const rainCtx =
+                document
+                    .getElementById("rainChart")
+                    .getContext("2d");
+
+
+            rainChart =
+                new Chart(
+                    rainCtx,
+                    {
+
+                        type: "line",
+
+                        data: {
+
+                            labels: labels,
+
+                            datasets: [
+
+                                {
+
+                                    label: "Rain",
+
+                                    data:
+                                        rainValues,
+
+                                    borderColor:
+                                        "#3498db",
+
+                                    backgroundColor:
+                                        "rgba(52, 152, 219, 0.15)",
+
+                                    borderWidth: 3,
+
+                                    pointRadius: 4,
+
+                                    pointHoverRadius: 6,
+
+                                    tension: 0.3,
+
+                                    fill: false
+
+                                }
+
+                            ]
+
+                        },
+
+
+                        options: {
+
+                            responsive: true,
+
+                            maintainAspectRatio: false,
+
+                            plugins: {
+
+                                legend: {
+
+                                    display: false
+
+                                }
+
+                            },
+
+
+                            scales: {
+
+                                x: {
+
+                                    ticks: {
+
+                                        color: "#8fa3bd",
+
+                                        maxRotation: 45,
+
+                                        minRotation: 45
+
+                                    },
+
+                                    grid: {
+
+                                        color:
+                                            "#263953"
+
+                                    }
+
+                                },
+
+
+                                y: {
+
+                                    ticks: {
+
+                                        color: "#8fa3bd"
+
+                                    },
+
+                                    grid: {
+
+                                        color:
+                                            "#263953"
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+                );
+
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Supabase error:",
+                error
             );
 
 
-        rainChart.update();
+            document.getElementById(
+                "databaseStatus"
+            ).textContent =
+                "Database connection error";
 
-
-        /* =================================
-           LIVE STATUS
-        ================================= */
-
-        document.querySelector(
-            ".live"
-        ).textContent =
-            "● LIVE DATA";
+        }
 
     }
 
 
-    catch(error){
+    /* =====================================================
+       FIRST LOAD
+       ===================================================== */
 
-        console.error(error);
-
-
-        document.querySelector(
-            ".live"
-        ).textContent =
-            "● CONNECTION ERROR";
-
-    }
-
-}
+    loadData();
 
 
-/* =========================================
-   START
-========================================= */
+    /* =====================================================
+       AUTO REFRESH EVERY 5 SECONDS
+       ===================================================== */
 
-makeCharts();
-
-loadData();
-
-
-/* =========================================
-   AUTO REFRESH EVERY 5 SECONDS
-========================================= */
-
-setInterval(
-    loadData,
-    5000
-);
+    setInterval(
+        loadData,
+        5000
+    );
 
 </script>
 

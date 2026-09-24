@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>IoT-FYP Dashboard</title>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -59,7 +61,8 @@ body{
     margin-bottom:20px
 }
 
-.card,.chart-card{
+.card,
+.chart-card{
     background:#121c2d;
     border:1px solid #243249;
     border-radius:16px;
@@ -150,95 +153,173 @@ body{
 
 <div class="container">
 
-<div class="header">
-    <div>
-        <div class="title">IoT-FYP Dashboard</div>
-        <div class="subtitle">In-Pipe Energy Monitoring System</div>
+    <div class="header">
+
+        <div>
+            <div class="title">
+                IoT-FYP Dashboard
+            </div>
+
+            <div class="subtitle">
+                In-Pipe Energy Monitoring System
+            </div>
+        </div>
+
+        <div class="live">
+            ● LIVE DATA
+        </div>
+
     </div>
 
-    <div class="live">● LIVE DATA</div>
-</div>
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="label">
+                VOLTAGE
+            </div>
+
+            <div>
+                <span id="voltage" class="value">--</span>
+                <span class="unit">V</span>
+            </div>
+
+            <div id="voltageStatus" class="status">
+                Waiting...
+            </div>
+        </div>
 
 
-<div class="cards">
+        <div class="card">
+            <div class="label">
+                RAIN
+            </div>
 
-<div class="card">
-    <div class="label">VOLTAGE</div>
-    <div>
-        <span id="voltage" class="value">--</span>
-        <span class="unit">V</span>
+            <div>
+                <span id="rain" class="value">--</span>
+            </div>
+
+            <div id="rainStatus" class="status">
+                Waiting...
+            </div>
+        </div>
+
+
+        <div class="card">
+
+            <div class="label">
+                LAST READING
+            </div>
+
+            <div id="lastReading"
+                 class="value"
+                 style="font-size:19px">
+                --
+            </div>
+
+            <div class="status">
+                Malaysia Time (GMT+8)
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="label">
+                RECORDS
+            </div>
+
+            <div id="records" class="value">
+                --
+            </div>
+
+            <div class="status normal">
+                Database connected
+            </div>
+
+        </div>
+
     </div>
-    <div id="voltageStatus" class="status">Waiting...</div>
-</div>
 
 
-<div class="card">
-    <div class="label">RAIN</div>
-    <div>
-        <span id="rain" class="value">--</span>
+    <div class="grid">
+
+        <div class="chart-card">
+
+            <div class="chart-title">
+                Voltage History
+            </div>
+
+            <div class="chart-wrap">
+                <canvas id="voltageChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <div class="chart-card">
+
+            <div class="chart-title">
+                Rain History
+            </div>
+
+            <div class="chart-wrap">
+                <canvas id="rainChart"></canvas>
+            </div>
+
+        </div>
+
     </div>
-    <div id="rainStatus" class="status">Waiting...</div>
-</div>
 
 
-<div class="card">
-    <div class="label">LAST READING</div>
-    <div id="lastReading" class="value" style="font-size:19px">--</div>
-    <div class="status">Malaysia Time (GMT+8)</div>
-</div>
-
-
-<div class="card">
-    <div class="label">RECORDS</div>
-    <div id="records" class="value">--</div>
-    <div class="status normal">Database connected</div>
-</div>
-
-</div>
-
-
-<div class="grid">
-
-<div class="chart-card">
-    <div class="chart-title">Voltage History</div>
-    <div class="chart-wrap">
-        <canvas id="voltageChart"></canvas>
+    <div class="footer">
+        IoT-FYP • Supabase Data API • Malaysia Time (GMT+8) • Auto refresh every 5 seconds
     </div>
-</div>
-
-
-<div class="chart-card">
-    <div class="chart-title">Rain History</div>
-    <div class="chart-wrap">
-        <canvas id="rainChart"></canvas>
-    </div>
-</div>
-
-</div>
-
-
-<div class="footer">
-    IoT-FYP • Supabase Data API • Malaysia Time (GMT+8) • Auto refresh every 5 seconds
-</div>
 
 </div>
 
 
 <script>
 
-const SUPABASE_URL="https://yemublzamyvyheheqoij.supabase.co";
+/* ================================
+   SUPABASE CONFIGURATION
+================================ */
 
-const SUPABASE_KEY="sb_publishable_V72oPOCmQdC2DPke7OwPng_3DaQUy9y";
+const SUPABASE_URL =
+"https://yemublzamyvyheheqoij.supabase.co";
 
-const ENDPOINT=`${SUPABASE_URL}/rest/v1/sensor_data`;
+const SUPABASE_KEY =
+"sb_publishable_V72oPOCmQdC2DPke7OwPng_3DaQUy9y";
 
-let voltageChart,rainChart;
+const ENDPOINT =
+`${SUPABASE_URL}/rest/v1/sensor_data`;
 
 
-/* Chart settings */
+/* ================================
+   TIMEZONE MALAYSIA
+================================ */
 
-const options={
+const MALAYSIA_TIMEZONE =
+"Asia/Kuala_Lumpur";
+
+
+/* ================================
+   CHART VARIABLES
+================================ */
+
+let voltageChart;
+let rainChart;
+
+
+/* ================================
+   CHART OPTIONS
+================================ */
+
+const options = {
+
     responsive:true,
+
     maintainAspectRatio:false,
 
     plugins:{
@@ -248,10 +329,12 @@ const options={
     },
 
     scales:{
+
         x:{
             ticks:{
                 color:"#91a0b7"
             },
+
             grid:{
                 color:"#243249"
             }
@@ -261,19 +344,24 @@ const options={
             ticks:{
                 color:"#91a0b7"
             },
+
             grid:{
                 color:"#243249"
             }
         }
+
     }
+
 };
 
 
-/* Create charts */
+/* ================================
+   CREATE CHARTS
+================================ */
 
 function makeCharts(){
 
-    voltageChart=new Chart(
+    voltageChart = new Chart(
         document.getElementById("voltageChart"),
         {
             type:"line",
@@ -284,18 +372,18 @@ function makeCharts(){
                 datasets:[
                     {
                         data:[],
-                        tension:.35,
+                        tension:0.35,
                         fill:false
                     }
                 ]
             },
 
-            options
+            options:options
         }
     );
 
 
-    rainChart=new Chart(
+    rainChart = new Chart(
         document.getElementById("rainChart"),
         {
             type:"line",
@@ -306,154 +394,251 @@ function makeCharts(){
                 datasets:[
                     {
                         data:[],
-                        tension:.35,
+                        tension:0.35,
                         fill:false
                     }
                 ]
             },
 
-            options
+            options:options
         }
     );
+
 }
 
 
-/* Load data from Supabase */
+/* ================================
+   FORMAT MALAYSIA DATE + TIME
+================================ */
+
+function formatMalaysiaDateTime(dateString){
+
+    return new Date(dateString).toLocaleString(
+        "en-MY",
+        {
+            timeZone:MALAYSIA_TIMEZONE,
+
+            year:"numeric",
+            month:"2-digit",
+            day:"2-digit",
+
+            hour:"2-digit",
+            minute:"2-digit",
+            second:"2-digit",
+
+            hour12:true
+        }
+    );
+
+}
+
+
+/* ================================
+   FORMAT MALAYSIA TIME FOR GRAPH
+================================ */
+
+function formatMalaysiaTime(dateString){
+
+    return new Date(dateString).toLocaleTimeString(
+        "en-MY",
+        {
+            timeZone:MALAYSIA_TIMEZONE,
+
+            hour:"2-digit",
+            minute:"2-digit",
+            second:"2-digit",
+
+            hour12:true
+        }
+    );
+
+}
+
+
+/* ================================
+   LOAD DATA FROM SUPABASE
+================================ */
 
 async function loadData(){
 
-    if(SUPABASE_KEY==="PASTE_YOUR_PUBLISHABLE_KEY_HERE"){
-        return;
-    }
-
     try{
 
-        const res=await fetch(
+        const res = await fetch(
+
             `${ENDPOINT}?select=id,voltage,rain,voltage_status,rain_status,reading_time&order=reading_time.desc&limit=20`,
+
             {
                 headers:{
                     apikey:SUPABASE_KEY,
-                    Authorization:`Bearer ${SUPABASE_KEY}`
+
+                    Authorization:
+                    `Bearer ${SUPABASE_KEY}`
                 }
             }
+
         );
 
 
         if(!res.ok){
-            throw new Error("HTTP "+res.status);
+
+            throw new Error(
+                "HTTP " + res.status
+            );
+
         }
 
 
-        const rows=await res.json();
+        const rows = await res.json();
 
 
         if(!rows.length){
+
             return;
         }
 
 
-        const latest=rows[0];
+        /* ================================
+           GET LATEST DATA
+        ================================= */
+
+        const latest = rows[0];
 
 
-        /* Latest sensor values */
+        /* Voltage */
 
-        voltage.textContent=latest.voltage??"--";
-
-        rain.textContent=latest.rain??"--";
-
-        voltageStatus.textContent=latest.voltage_status??"--";
-
-        rainStatus.textContent=latest.rain_status??"--";
+        document.getElementById("voltage").textContent =
+            latest.voltage ?? "--";
 
 
-        /* Malaysia Time GMT+8 */
+        /* Rain */
 
-        lastReading.textContent=
-            new Date(latest.reading_time).toLocaleString(
-                "en-MY",
-                {
-                    timeZone:"Asia/Kuala_Lumpur",
-                    year:"numeric",
-                    month:"2-digit",
-                    day:"2-digit",
-                    hour:"2-digit",
-                    minute:"2-digit",
-                    second:"2-digit",
-                    hour12:true
-                }
+        document.getElementById("rain").textContent =
+            latest.rain ?? "--";
+
+
+        /* Voltage Status */
+
+        document.getElementById("voltageStatus").textContent =
+            latest.voltage_status ?? "--";
+
+
+        /* Rain Status */
+
+        document.getElementById("rainStatus").textContent =
+            latest.rain_status ?? "--";
+
+
+        /* ================================
+           LAST READING - MALAYSIA TIME
+        ================================= */
+
+        document.getElementById("lastReading").textContent =
+            formatMalaysiaDateTime(
+                latest.reading_time
             );
 
 
-        /* Number of records */
+        /* ================================
+           RECORD COUNT
+        ================================= */
 
-        records.textContent=
-            rows.length+(rows.length===20?"+":"");
-
-
-        /* Reverse data for chart */
-
-        const c=[...rows].reverse();
+        document.getElementById("records").textContent =
+            rows.length +
+            (rows.length === 20 ? "+" : "");
 
 
-        /* Malaysia Time labels */
+        /* ================================
+           REVERSE DATA FOR CHART
+        ================================= */
 
-        const labels=c.map(
-            r=>new Date(r.reading_time).toLocaleTimeString(
-                "en-MY",
-                {
-                    timeZone:"Asia/Kuala_Lumpur",
-                    hour:"2-digit",
-                    minute:"2-digit",
-                    second:"2-digit",
-                    hour12:true
-                }
-            )
-        );
+        const c =
+            [...rows].reverse();
 
 
-        /* Voltage chart */
+        /* ================================
+           MALAYSIA TIME LABELS
+        ================================= */
 
-        voltageChart.data.labels=labels;
+        const labels =
+            c.map(
+                r =>
+                formatMalaysiaTime(
+                    r.reading_time
+                )
+            );
 
-        voltageChart.data.datasets[0].data=
-            c.map(r=>Number(r.voltage));
 
+        /* ================================
+           VOLTAGE CHART
+        ================================= */
 
-        /* Rain chart */
+        voltageChart.data.labels =
+            labels;
 
-        rainChart.data.labels=labels;
-
-        rainChart.data.datasets[0].data=
-            c.map(r=>Number(r.rain));
-
+        voltageChart.data.datasets[0].data =
+            c.map(
+                r =>
+                Number(r.voltage)
+            );
 
         voltageChart.update();
 
+
+        /* ================================
+           RAIN CHART
+        ================================= */
+
+        rainChart.data.labels =
+            labels;
+
+        rainChart.data.datasets[0].data =
+            c.map(
+                r =>
+                Number(r.rain)
+            );
+
         rainChart.update();
 
-    }
 
+        /* ================================
+           CONNECTION STATUS
+        ================================= */
+
+        document.querySelector(".live").textContent =
+            "● LIVE DATA";
+
+
+    }
 
     catch(e){
 
         console.error(e);
 
-        document.querySelector(".live").textContent=
+        document.querySelector(".live").textContent =
             "● CONNECTION ERROR";
+
     }
+
 }
 
 
-/* Start dashboard */
+/* ================================
+   START DASHBOARD
+================================ */
 
 makeCharts();
 
 loadData();
 
 
-/* Refresh every 5 seconds */
+/* ================================
+   AUTO REFRESH EVERY 5 SECONDS
+================================ */
 
-setInterval(loadData,5000);
+setInterval(
+    loadData,
+    5000
+);
 
 </script>
 

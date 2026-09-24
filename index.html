@@ -12,37 +12,37 @@
 *{
     box-sizing:border-box;
     margin:0;
-    padding:0
+    padding:0;
 }
 
 body{
     font-family:Arial,sans-serif;
     background:#0b1220;
     color:#e8eef7;
-    min-height:100vh
+    min-height:100vh;
 }
 
 .container{
     max-width:1200px;
     margin:auto;
-    padding:28px
+    padding:28px;
 }
 
 .header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:28px
+    margin-bottom:28px;
 }
 
 .title{
     font-size:28px;
-    font-weight:700
+    font-weight:700;
 }
 
 .subtitle{
     color:#91a0b7;
-    margin-top:6px
+    margin-top:6px;
 }
 
 .live{
@@ -51,14 +51,14 @@ body{
     background:#123522;
     color:#58e08a;
     font-size:13px;
-    font-weight:600
+    font-weight:600;
 }
 
 .cards{
     display:grid;
     grid-template-columns:repeat(4,1fr);
     gap:18px;
-    margin-bottom:20px
+    margin-bottom:20px;
 }
 
 .card,
@@ -66,84 +66,84 @@ body{
     background:#121c2d;
     border:1px solid #243249;
     border-radius:16px;
-    padding:22px
+    padding:22px;
 }
 
 .label{
     color:#91a0b7;
     font-size:13px;
-    margin-bottom:12px
+    margin-bottom:12px;
 }
 
 .value{
     font-size:32px;
-    font-weight:700
+    font-weight:700;
 }
 
 .unit{
     font-size:15px;
     color:#91a0b7;
-    margin-left:5px
+    margin-left:5px;
 }
 
 .status{
     margin-top:10px;
     font-size:13px;
-    font-weight:600
+    font-weight:600;
 }
 
 .normal{
-    color:#58e08a
+    color:#58e08a;
 }
 
 .warning{
-    color:#ffcc66
+    color:#ffcc66;
 }
 
 .grid{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:18px
+    gap:18px;
 }
 
 .chart-title{
     font-size:16px;
     font-weight:600;
-    margin-bottom:18px
+    margin-bottom:18px;
 }
 
 .chart-wrap{
-    height:280px
+    height:280px;
 }
 
 .footer{
     margin-top:20px;
     color:#687991;
     font-size:12px;
-    text-align:center
+    text-align:center;
 }
 
 @media(max-width:850px){
     .cards{
-        grid-template-columns:repeat(2,1fr)
+        grid-template-columns:repeat(2,1fr);
     }
 
     .grid{
-        grid-template-columns:1fr
+        grid-template-columns:1fr;
     }
 }
 
 @media(max-width:520px){
     .container{
-        padding:18px
+        padding:18px;
     }
 
     .cards{
-        grid-template-columns:1fr
+        grid-template-columns:1fr;
     }
 
     .value{
-        font-size:28px
+        font-size:28px;
     }
 }
 </style>
@@ -175,6 +175,7 @@ body{
     <div class="cards">
 
         <div class="card">
+
             <div class="label">
                 VOLTAGE
             </div>
@@ -187,10 +188,12 @@ body{
             <div id="voltageStatus" class="status">
                 Waiting...
             </div>
+
         </div>
 
 
         <div class="card">
+
             <div class="label">
                 RAIN
             </div>
@@ -202,6 +205,7 @@ body{
             <div id="rainStatus" class="status">
                 Waiting...
             </div>
+
         </div>
 
 
@@ -230,7 +234,8 @@ body{
                 RECORDS
             </div>
 
-            <div id="records" class="value">
+            <div id="records"
+                 class="value">
                 --
             </div>
 
@@ -282,9 +287,9 @@ body{
 
 <script>
 
-/* ================================
-   SUPABASE CONFIGURATION
-================================ */
+/* =========================================
+   SUPABASE
+========================================= */
 
 const SUPABASE_URL =
 "https://yemublzamyvyheheqoij.supabase.co";
@@ -296,25 +301,25 @@ const ENDPOINT =
 `${SUPABASE_URL}/rest/v1/sensor_data`;
 
 
-/* ================================
-   TIMEZONE MALAYSIA
-================================ */
+/* =========================================
+   MALAYSIA TIMEZONE
+========================================= */
 
 const MALAYSIA_TIMEZONE =
 "Asia/Kuala_Lumpur";
 
 
-/* ================================
+/* =========================================
    CHART VARIABLES
-================================ */
+========================================= */
 
 let voltageChart;
 let rainChart;
 
 
-/* ================================
+/* =========================================
    CHART OPTIONS
-================================ */
+========================================= */
 
 const options = {
 
@@ -355,266 +360,375 @@ const options = {
 };
 
 
-/* ================================
-   CREATE CHARTS
-================================ */
+/* =========================================
+   CONVERT SUPABASE TIME TO MALAYSIA TIME
+========================================= */
 
-function makeCharts(){
+function convertToMalaysiaTime(dateString){
 
-    voltageChart = new Chart(
-        document.getElementById("voltageChart"),
-        {
-            type:"line",
+    let value = String(dateString);
 
-            data:{
-                labels:[],
+    /*
+       Supabase timestamp may arrive without
+       timezone information.
 
-                datasets:[
-                    {
-                        data:[],
-                        tension:0.35,
-                        fill:false
-                    }
-                ]
-            },
+       We force it to UTC first.
+    */
 
-            options:options
-        }
-    );
+    if(
+        !value.endsWith("Z") &&
+        !value.includes("+") &&
+        !/[+-]\d{2}:\d{2}$/.test(value)
+    ){
+
+        value =
+            value.replace(" ","T") + "Z";
+
+    }
 
 
-    rainChart = new Chart(
-        document.getElementById("rainChart"),
-        {
-            type:"line",
-
-            data:{
-                labels:[],
-
-                datasets:[
-                    {
-                        data:[],
-                        tension:0.35,
-                        fill:false
-                    }
-                ]
-            },
-
-            options:options
-        }
-    );
+    return new Date(value);
 
 }
 
 
-/* ================================
-   FORMAT MALAYSIA DATE + TIME
-================================ */
+/* =========================================
+   FORMAT DATE + TIME
+========================================= */
 
 function formatMalaysiaDateTime(dateString){
 
-    return new Date(dateString).toLocaleString(
+    const date =
+        convertToMalaysiaTime(dateString);
+
+
+    return date.toLocaleString(
         "en-MY",
         {
+
             timeZone:MALAYSIA_TIMEZONE,
 
             year:"numeric",
+
             month:"2-digit",
+
             day:"2-digit",
 
             hour:"2-digit",
+
             minute:"2-digit",
+
             second:"2-digit",
 
             hour12:true
+
         }
     );
 
 }
 
 
-/* ================================
-   FORMAT MALAYSIA TIME FOR GRAPH
-================================ */
+/* =========================================
+   FORMAT GRAPH TIME
+========================================= */
 
 function formatMalaysiaTime(dateString){
 
-    return new Date(dateString).toLocaleTimeString(
+    const date =
+        convertToMalaysiaTime(dateString);
+
+
+    return date.toLocaleTimeString(
         "en-MY",
         {
+
             timeZone:MALAYSIA_TIMEZONE,
 
             hour:"2-digit",
+
             minute:"2-digit",
+
             second:"2-digit",
 
             hour12:true
+
         }
     );
 
 }
 
 
-/* ================================
+/* =========================================
+   CREATE VOLTAGE + RAIN CHART
+========================================= */
+
+function makeCharts(){
+
+    voltageChart =
+        new Chart(
+            document.getElementById("voltageChart"),
+            {
+
+                type:"line",
+
+                data:{
+
+                    labels:[],
+
+                    datasets:[
+
+                        {
+
+                            data:[],
+
+                            tension:0.35,
+
+                            fill:false
+
+                        }
+
+                    ]
+
+                },
+
+                options:options
+
+            }
+        );
+
+
+    rainChart =
+        new Chart(
+            document.getElementById("rainChart"),
+            {
+
+                type:"line",
+
+                data:{
+
+                    labels:[],
+
+                    datasets:[
+
+                        {
+
+                            data:[],
+
+                            tension:0.35,
+
+                            fill:false
+
+                        }
+
+                    ]
+
+                },
+
+                options:options
+
+            }
+        );
+
+}
+
+
+/* =========================================
    LOAD DATA FROM SUPABASE
-================================ */
+========================================= */
 
 async function loadData(){
 
     try{
 
-        const res = await fetch(
+        const response =
+            await fetch(
 
-            `${ENDPOINT}?select=id,voltage,rain,voltage_status,rain_status,reading_time&order=reading_time.desc&limit=20`,
+                `${ENDPOINT}?select=id,voltage,rain,voltage_status,rain_status,reading_time&order=reading_time.desc&limit=20`,
 
-            {
-                headers:{
-                    apikey:SUPABASE_KEY,
+                {
 
-                    Authorization:
-                    `Bearer ${SUPABASE_KEY}`
+                    headers:{
+
+                        "apikey":
+                        SUPABASE_KEY,
+
+                        "Authorization":
+                        `Bearer ${SUPABASE_KEY}`
+
+                    }
+
                 }
-            }
 
-        );
+            );
 
 
-        if(!res.ok){
+        if(!response.ok){
 
             throw new Error(
-                "HTTP " + res.status
+                "HTTP " + response.status
             );
 
         }
 
 
-        const rows = await res.json();
+        const rows =
+            await response.json();
 
 
         if(!rows.length){
 
             return;
+
         }
 
 
-        /* ================================
-           GET LATEST DATA
+        /* =================================
+           LATEST DATA
         ================================= */
 
-        const latest = rows[0];
+        const latest =
+            rows[0];
 
 
         /* Voltage */
 
-        document.getElementById("voltage").textContent =
+        document.getElementById(
+            "voltage"
+        ).textContent =
             latest.voltage ?? "--";
 
 
         /* Rain */
 
-        document.getElementById("rain").textContent =
+        document.getElementById(
+            "rain"
+        ).textContent =
             latest.rain ?? "--";
 
 
         /* Voltage Status */
 
-        document.getElementById("voltageStatus").textContent =
+        document.getElementById(
+            "voltageStatus"
+        ).textContent =
             latest.voltage_status ?? "--";
 
 
         /* Rain Status */
 
-        document.getElementById("rainStatus").textContent =
+        document.getElementById(
+            "rainStatus"
+        ).textContent =
             latest.rain_status ?? "--";
 
 
-        /* ================================
-           LAST READING - MALAYSIA TIME
+        /* =================================
+           LAST READING
+           MALAYSIA UTC+8
         ================================= */
 
-        document.getElementById("lastReading").textContent =
+        document.getElementById(
+            "lastReading"
+        ).textContent =
             formatMalaysiaDateTime(
                 latest.reading_time
             );
 
 
-        /* ================================
-           RECORD COUNT
+        /* =================================
+           RECORDS
         ================================= */
 
-        document.getElementById("records").textContent =
+        document.getElementById(
+            "records"
+        ).textContent =
             rows.length +
             (rows.length === 20 ? "+" : "");
 
 
-        /* ================================
-           REVERSE DATA FOR CHART
+        /* =================================
+           CHART DATA
         ================================= */
 
-        const c =
+        const chartData =
             [...rows].reverse();
 
 
-        /* ================================
+        /* =================================
            MALAYSIA TIME LABELS
         ================================= */
 
         const labels =
-            c.map(
-                r =>
-                formatMalaysiaTime(
-                    r.reading_time
-                )
+            chartData.map(
+
+                row =>
+                    formatMalaysiaTime(
+                        row.reading_time
+                    )
+
             );
 
 
-        /* ================================
+        /* =================================
            VOLTAGE CHART
         ================================= */
 
         voltageChart.data.labels =
             labels;
 
+
         voltageChart.data.datasets[0].data =
-            c.map(
-                r =>
-                Number(r.voltage)
+            chartData.map(
+
+                row =>
+                    Number(row.voltage)
+
             );
+
 
         voltageChart.update();
 
 
-        /* ================================
+        /* =================================
            RAIN CHART
         ================================= */
 
         rainChart.data.labels =
             labels;
 
+
         rainChart.data.datasets[0].data =
-            c.map(
-                r =>
-                Number(r.rain)
+            chartData.map(
+
+                row =>
+                    Number(row.rain)
+
             );
+
 
         rainChart.update();
 
 
-        /* ================================
-           CONNECTION STATUS
+        /* =================================
+           LIVE STATUS
         ================================= */
 
-        document.querySelector(".live").textContent =
+        document.querySelector(
+            ".live"
+        ).textContent =
             "● LIVE DATA";
-
 
     }
 
-    catch(e){
 
-        console.error(e);
+    catch(error){
 
-        document.querySelector(".live").textContent =
+        console.error(error);
+
+
+        document.querySelector(
+            ".live"
+        ).textContent =
             "● CONNECTION ERROR";
 
     }
@@ -622,18 +736,18 @@ async function loadData(){
 }
 
 
-/* ================================
-   START DASHBOARD
-================================ */
+/* =========================================
+   START
+========================================= */
 
 makeCharts();
 
 loadData();
 
 
-/* ================================
+/* =========================================
    AUTO REFRESH EVERY 5 SECONDS
-================================ */
+========================================= */
 
 setInterval(
     loadData,
